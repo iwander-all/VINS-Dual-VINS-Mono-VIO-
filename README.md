@@ -57,15 +57,21 @@ rosbag play YOUR_PATH_TO_DATASET/MH_01_easy.bag
 VINS_dual包含两个ROS结点，分别是特征提取结点和vio结点；
 
 **featureTracker node：**
+
 **main线程**：订阅双目视觉帧，放入各自的buf中；
+
 **featureTracker线程**：获取2个buf中的视觉帧，对齐时间戳，分别进行光流跟踪，并发布同一时刻上双目追踪到的全部特征点的像素坐标。
 
+
 **vio node：**
+
 **main线程**：订阅IMU，特征点frame信息，分别放入各自的buf中；
+
 **vio线程**：获取特征点和IMU信息并对齐；IMU预积分；从图像帧中获取信息并给feature类补充新的特征点；确定滑窗策略；初始化；后端优化；
 
 初始化过程定义为**class Initial**，负责系统的初始化；
 非线性优化定义为**class Backend**,负责滑动窗口和非线性优化。
+
 其中，非线性优化所维护的H矩阵包括：
 (1)先验误差；
 (2)相邻两帧的IMU误差； 
