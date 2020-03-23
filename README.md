@@ -20,7 +20,7 @@ catkin_make
 ```
 
 ## 3. VINS-Dual的启动
-请在EuRoC MAV Dataset下载您需要测试的数据集。
+请在[EuRoC MAV Dataset](https://projects.asl.ethz.ch/datasets/doku.php?id=kmavvisualinertialdatasets)下载您需要测试的数据集。
 
 打开1个控制台，输入：
 ```
@@ -29,7 +29,7 @@ roscore
 
 进入devel目录，分别打开2个控制台，输入：
 ```
-source setup	.bash
+source setup.bash
 ```
 
 再分别输入：
@@ -56,28 +56,20 @@ rosbag play YOUR_PATH_TO_DATASET/MH_01_easy.bag
 
 VINS_dual包含两个ROS结点，分别是特征提取结点和vio结点；
 
-featureTracker node：
+**featureTracker node：**
+**main线程**：订阅双目视觉帧，放入各自的buf中；
+**featureTracker线程**：获取2个buf中的视觉帧，对齐时间戳，分别进行光流跟踪，并发布同一时刻上双目追踪到的全部特征点的像素坐标。
 
-main线程：订阅双目视觉帧，放入各自的buf中；
+**vio node：**
+**main线程**：订阅IMU，特征点frame信息，分别放入各自的buf中；
+**vio线程**：获取特征点和IMU信息并对齐；IMU预积分；从图像帧中获取信息并给feature类补充新的特征点；确定滑窗策略；初始化；后端优化；
 
-featureTracker线程：获取2个buf中的视觉帧，对齐时间戳，分别进行光流跟踪，并发布同一时刻上双目追踪到的全部特征点的像素坐标。
-
-vio node：
-
-main线程：订阅IMU，特征点frame信息，分别放入各自的buf中；
-
-vio线程：获取特征点和IMU信息并对齐；IMU预积分；从图像帧中获取信息并给feature类补充新的特征点；确定滑窗策略；初始化；后端优化；
-
-初始化过程定义为class Initial，负责系统的初始化；
-非线性优化定义为class Backend,负责滑动窗口和非线性优化。
-
+初始化过程定义为**class Initial**，负责系统的初始化；
+非线性优化定义为**class Backend**,负责滑动窗口和非线性优化。
 其中，非线性优化所维护的H矩阵包括：
-
 (1)先验误差；
-
 (2)相邻两帧的IMU误差； 
-
-(3)具有共视点的两帧之间的重投影误差(重投影误差提供了三种残差模型：纯左目的重投影误差；纯右目的重投影误差和融合双目的重投影误差，可以通过更改yaml文件中的flag确定重投影误差模式)。
+(3)具有共视点的两帧之间的重投影误差(重投影误差提供了**三种残差模型**：纯左目的重投影误差；纯右目的重投影误差；融合双目的重投影误差。可以通过更改yaml文件中的flag确定重投影误差模式)。
 
 ## 5.参考文献
 T.Qin, P.L.Li, S.J.Shen, VINS-Mono: A Robust and Versatile Monocular Visual-Inertial State Estimator.
