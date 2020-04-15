@@ -84,5 +84,7 @@ VINS_dual包含两个ROS结点，分别是特征提取结点和vio结点；
 ## 5.参考文献
 T.Qin, P.L.Li, S.J.Shen, VINS-Mono: A Robust and Versatile Monocular Visual-Inertial State Estimator.
 
-
+## 6.联系方式
+rhuag@connect.ust.hk
+我将持续对代码进行更新和改进。
 
