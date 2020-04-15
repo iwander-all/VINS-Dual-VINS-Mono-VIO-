@@ -1,6 +1,6 @@
 # VINS-Dual：基于VINS-Mono的双目VIO系统开发
 
-这个系统是基于香港科技大学飞行机器人组的开源框架VINS-Mono开发的，原开源框架是针对单目SLAM。本双目SLAM系统是在原开源框架基础上的二次深度开发，外部接口与原框架一致。对VINS-Mono的深度分析请见[我的博客](https://blog.csdn.net/iwanderu/article/details/104617829)，您可以依此对比原开源框架[VINS-Mono](https://github.com/HKUST-Aerial-Robotics/VINS-Mono)或[VINS-Fusion](https://github.com/HKUST-Aerial-Robotics/VINS-Fusion)与[本系统](https://github.com/iwander-all/VINS-Dual-VINS-Mono-VIO-)的区别。这个项目是我的研究课题项目，非商业用途，感谢HKUST的沈老师课题组提供的开源框架。
+这个系统是基于香港科技大学飞行机器人组的开源框架VINS-Mono开发的，原开源框架是针对单目SLAM。本双目SLAM系统是在原开源框架基础上的二次深度开发，外部接口与原框架一致。对VINS-Mono的深度分析请见[我的博客](https://blog.csdn.net/iwanderu/article/details/104617829)或support_file，您可以依此对比原开源框架[VINS-Mono](https://github.com/HKUST-Aerial-Robotics/VINS-Mono)或[VINS-Fusion](https://github.com/HKUST-Aerial-Robotics/VINS-Fusion)与[本系统](https://github.com/iwander-all/VINS-Dual-VINS-Mono-VIO-)的区别。这个项目是我的研究课题项目，非商业用途，感谢HKUST的沈老师课题组提供的开源框架。
 
 
 下一步迭代计划：通过yaml文件设置，可以自由选择 左目+IMU，右目+IMU，或双目+IMU 三种VIO形式。
