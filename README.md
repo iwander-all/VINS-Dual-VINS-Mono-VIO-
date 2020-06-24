@@ -3,7 +3,11 @@
 这个系统是基于香港科技大学飞行机器人组的开源框架VINS-Mono开发的，原开源框架是针对单目SLAM。本双目SLAM系统是在原开源框架基础上的二次深度开发，外部接口与原框架一致。对VINS-Mono的深度分析请见[我的博客](https://blog.csdn.net/iwanderu/article/details/104617829)或support_files，您可以依此对比原开源框架[VINS-Mono](https://github.com/HKUST-Aerial-Robotics/VINS-Mono)或[VINS-Fusion](https://github.com/HKUST-Aerial-Robotics/VINS-Fusion)与[本系统](https://github.com/iwander-all/VINS-Dual-VINS-Mono-VIO-)的区别。这个项目是我的研究课题项目，非商业用途，感谢HKUST的沈老师课题组提供的开源框架。
 
 
-下一步迭代计划：通过yaml文件设置，可以自由选择 左目+IMU，右目+IMU，或双目+IMU 三种VIO形式。之前有哥们提醒我无法运行，后来发现忘记把config的yaml文件上传上来，现在已经上传。另外如果需要运行回环检测，请将vins-mono的support files里的brief_k10L6.bin放到这个项目的同名目录下，否则无法实现回环检测的功能。
+<a>下一步迭代计划：</a>
+<a>(1)通过yaml文件设置，可以自由选择 左目+IMU，右目+IMU，或双目+IMU 三种VIO形式。</a>
+(2)利用极线搜索为左右目光流提供初始值；
+(3)
+之前有哥们提醒我无法运行，后来发现忘记把config的yaml文件上传上来，现在已经上传。另外如果需要运行回环检测，请将vins-mono的support files里的brief_k10L6.bin放到这个项目的同名目录下，否则无法实现回环检测的功能。
 
 ## 1.需要的基本配置
 ```
