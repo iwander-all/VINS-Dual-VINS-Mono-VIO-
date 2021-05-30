@@ -1,11 +1,11 @@
 # VINS-Dual：基于VINS-Mono的双目VIO系统开发
 
 ## Update on 30/5/2021
-1. rewrite feature_manager.cpp and change trianglute() which use left and right to triangulate.
-2. rewrite initial_sfm.cpp:
-   (1)add triangulateLeftAndRight() which use left and right to triangulate.
-   (2)use triangulateLeftAndRight() in construct().
-   (3)rewrite window BA in construct().
+1. rewrite ```feature_manager.cpp``` and change ```trianglute()``` which use left and right to triangulate.
+2. rewrite ```initial_sfm.cpp```:
+   (1)add ```triangulateLeftAndRight()``` which use left and right to triangulate. /n
+   (2)use ```triangulateLeftAndRight()``` in ```construct()```.
+   (3)rewrite window BA in ```construct()```.
    
 In VIO with two cameras, the input information of vision doubled. So it is easier to recover 3D coordinates of features.
 But it is more computational consuming in frontend tracking. 
