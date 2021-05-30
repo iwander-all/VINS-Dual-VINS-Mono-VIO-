@@ -159,6 +159,34 @@ vector<pair<Vector3d, Vector3d>> FeatureManager::getCorresponding(int frame_coun
     return corres;
 }
 
+// void FeatureManager::setDepth(const vector<vector<double>> &x)
+// {
+//     ROS_INFO("FeatureManager::setDepth");
+//     int feature_index = -1;
+//     //assert(x[0].size() == getFeatureCount());
+
+//     for (auto &it_per_id : feature)
+//     {
+//         it_per_id.used_num = it_per_id.feature_per_frame.size();
+//         // it_per_id.used_num1 = it_per_id.feature_per_frame1.size();
+//         // assert(it_per_id.used_num == it_per_id.used_num1);
+//         // assert(it_per_id.start_frame == it_per_id.start_frame1);
+
+//         if (!(it_per_id.used_num >= 2 && it_per_id.start_frame < WINDOW_SIZE - 2))
+//             continue;
+
+//         it_per_id.estimated_depth = 1.0 / x[0][++feature_index];
+//         it_per_id.estimated_depth1 = 1.0 / x[1][++feature_index];
+//         //ROS_INFO("feature id %d , start_frame %d, depth %f ", it_per_id->feature_id, it_per_id-> start_frame, it_per_id->estimated_depth);
+//         if (it_per_id.estimated_depth < 0)
+//         {
+//             it_per_id.solve_flag = 2;
+//         }
+//         else
+//             it_per_id.solve_flag = 1;
+//     }
+// }
+
 void FeatureManager::setDepth(const VectorXd &x)
 {
     // ROS_INFO("FeatureManager::setDepth");
@@ -213,6 +241,28 @@ void FeatureManager::removeFailures()
     }
 }
 
+// void FeatureManager::clearDepth(const vector<vector<double>> &x)
+// {
+//     ROS_INFO("FeatureManager::clearDepth");
+//     int feature_index = -1;
+//     //assert(x[0].size() == getFeatureCount());
+
+//     for (auto &it_per_id : feature)
+//     {
+//         it_per_id.used_num = it_per_id.feature_per_frame.size();
+//         // it_per_id.used_num1 = it_per_id.feature_per_frame1.size();
+//         // assert(it_per_id.used_num == it_per_id.used_num1);
+//         // assert(it_per_id.start_frame == it_per_id.start_frame1);
+
+//         if (!(it_per_id.used_num >= 2 && it_per_id.start_frame < WINDOW_SIZE - 2))
+//             continue;
+//         //it_per_id.estimated_depth = 1.0 / x[0][++feature_index];
+//         //it_per_id.estimated_depth1 = 1.0 / x[1][++feature_index];
+//         it_per_id.estimated_depth = -1.0;
+//         it_per_id.estimated_depth1 = -1.0;
+//     }
+// }
+
 void FeatureManager::clearDepth(const VectorXd &x)
 {
     // ROS_INFO("FeatureManager::clearDepth");
@@ -243,6 +293,45 @@ void FeatureManager::clearDepthInRight(const VectorXd &x)
         it_per_id.estimated_depth1 = 1.0 / x(++feature_index);
     }
 }
+
+// vector<vector<double>> FeatureManager::getDepthVector()
+// {
+//     ROS_INFO("FeatureManager::getDepthVector");
+//     //must define the size of VectorX , it will cause the error:
+//     ///usr/local/include/eigen3/Eigen/src/Core/DenseCoeffsBase.h:425: 
+//     //Eigen::DenseCoeffsBase<Derived, 1>::Scalar& Eigen::DenseCoeffsBase<Derived, 1>::operator()(Eigen::Index)
+//     //[with Derived = Eigen::Matrix<double, -1, 1>; Eigen::DenseCoeffsBase<Derived, 1>::Scalar = double; 
+//     //Eigen::Index = long int]: Assertion `index >= 0 && index < size()' failed.
+
+//     //int feature_count = getFeatureCount();
+//     vector<double> dep_vec;//(feature_count);
+//     vector<double> dep_vec1;//(feature_count);
+//     vector<vector<double>> res;
+//     res.emplace_back(dep_vec);
+//     res.emplace_back(dep_vec1);
+
+//     int feature_index = -1;
+//     for (auto &it_per_id : feature)
+//     {
+//         it_per_id.used_num = it_per_id.feature_per_frame.size();
+//         it_per_id.used_num1 = it_per_id.feature_per_frame1.size();
+//         assert(it_per_id.used_num == it_per_id.used_num1);
+//         assert(it_per_id.start_frame == it_per_id.start_frame1);        
+        
+//         if (!(it_per_id.used_num >= 2 && it_per_id.start_frame < WINDOW_SIZE - 2))
+//             continue;
+
+//         // res[0][++feature_index] = 1. / it_per_id.estimated_depth;
+//         // res[1][++feature_index] = 1. / it_per_id.estimated_depth1;
+//         res[0].emplace_back(1. / it_per_id.estimated_depth);
+//         res[1].emplace_back(1. / it_per_id.estimated_depth1);
+
+//         //dep_vec(++feature_index) = it_per_id->estimated_depth;
+
+//     }
+//     assert(res[0].size() == getFeatureCount());
+//     return res;
+// }
 
 VectorXd FeatureManager::getDepthVector()
 {
@@ -279,6 +368,7 @@ VectorXd FeatureManager::getDepthVectorInRight()
 
 void FeatureManager::triangulate(Vector3d Ps[], Vector3d tic[], Matrix3d ric[])
 {
+#if 0
     // ROS_INFO("FeatureManager::triangulate");
     for (auto &it_per_id : feature)
     {
@@ -372,6 +462,64 @@ void FeatureManager::triangulate(Vector3d Ps[], Vector3d tic[], Matrix3d ric[])
         if (it_per_id.estimated_depth1 < 0.1)
             it_per_id.estimated_depth1 = INIT_DEPTH;
     }
+#endif
+    //29/5/2021 make fully use of left and right
+    for (auto &it_per_id : feature)
+    {
+        it_per_id.used_num = it_per_id.feature_per_frame.size();
+        //if (!(it_per_id.used_num >= 2 && it_per_id.start_frame < WINDOW_SIZE - 2))
+        //    continue;
+
+        if (it_per_id.estimated_depth > 0)
+            continue;
+        //int imu_i = it_per_id.start_frame, imu_j = imu_i - 1;
+
+        Eigen::MatrixXd svd_A(4 * it_per_id.feature_per_frame.size(), 4);
+        int svd_idx = 0;
+
+        Eigen::Matrix<double, 3, 4> P0, P1;
+	Eigen::Vector3d t = ric[0].transpose() * (tic[1] - tic[0]);
+        Eigen::Matrix3d R = ric[0].transpose() * ric[1];
+	P0.leftCols<3>() = Matrix3d::Identity();
+        P0.rightCols<1>() = Vector3d::Zero();
+        P1.leftCols<3>() = R.transpose();
+        P1.rightCols<1>() = -R.transpose() * t;
+
+	for (uint idx=0; idx<it_per_id.feature_per_frame.size();++idx)
+        {
+            //imu_j++;
+
+            Eigen::Vector3d f0 = it_per_id.feature_per_frame[idx].point;
+	    Eigen::Vector3d f1 = it_per_id.feature_per_frame1[idx].point;
+	    svd_A.row(svd_idx++) = f0[0] * P0.row(2) - P0.row(0);
+            svd_A.row(svd_idx++) = f0[1] * P0.row(2) - P0.row(1);
+            svd_A.row(svd_idx++) = f1[0] * P1.row(2) - P1.row(0);
+            svd_A.row(svd_idx++) = f1[1] * P1.row(2) - P1.row(1);
+
+            //if (imu_i == imu_j)
+            //    continue;
+        }
+        ROS_ASSERT(svd_idx == svd_A.rows());
+        Eigen::Vector4d svd_V = Eigen::JacobiSVD<Eigen::MatrixXd>(svd_A, Eigen::ComputeThinV).matrixV().rightCols<1>();
+	Eigen::Vector3d P_c0, P_c1;
+	P_c0[0] = svd_V[0] / svd_V[3];
+	P_c0[1] = svd_V[1] / svd_V[3];
+        P_c0[2] = svd_V[2] / svd_V[3];
+	P_c1 = R.transpose() * P_c0 - R.transpose() * t;
+        //it_per_id->estimated_depth = -b / A;
+        //it_per_id->estimated_depth = svd_V[2] / svd_V[3];
+
+        it_per_id.estimated_depth = P_c0[2];
+	it_per_id.estimated_depth1 = P_c1[2];
+        //it_per_id->estimated_depth = INIT_DEPTH;
+
+        if (it_per_id.estimated_depth < 0.1 || it_per_id.estimated_depth1 < 0.1)
+        {
+            it_per_id.estimated_depth = INIT_DEPTH;
+	    it_per_id.estimated_depth1 = INIT_DEPTH;
+        }
+
+    }  
 }
 
 void FeatureManager::removeOutlier()
@@ -440,6 +588,13 @@ void FeatureManager::removeBackShiftDepth(Eigen::Matrix3d marg_R, Eigen::Vector3
                     it->estimated_depth1 = INIT_DEPTH;
             }
         }
+        // remove tracking-lost feature after marginalize
+        /*
+        if (it->endFrame() < WINDOW_SIZE - 1)
+        {
+            feature.erase(it);
+        }
+        */
     }
 }
 
@@ -513,6 +668,9 @@ double FeatureManager::compensatedParallax2(const FeaturePerId &it_per_id, int f
     Vector3d p_i = frame_i.point;
     Vector3d p_i_comp;
 
+    //int r_i = frame_count - 2;
+    //int r_j = frame_count - 1;
+    //p_i_comp = ric[camera_id_j].transpose() * Rs[r_j].transpose() * Rs[r_i] * ric[camera_id_i] * p_i;
     p_i_comp = p_i;
     double dep_i = p_i(2);
     double u_i = p_i(0) / dep_i;
