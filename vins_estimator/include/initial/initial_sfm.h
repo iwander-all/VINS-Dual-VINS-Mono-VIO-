@@ -18,6 +18,7 @@ struct SFMFeature
     bool state;
     int id;
     vector<pair<int,Vector2d>> observation;
+    vector<pair<int,Vector2d>> observation1;
     double position[3];
     double depth;
 };
@@ -59,7 +60,9 @@ public:
 	GlobalSFM();
 	bool construct(int frame_num, Quaterniond* q, Vector3d* T, int l,
 			  const Matrix3d relative_R, const Vector3d relative_T,
-			  vector<SFMFeature> &sfm_f, map<int, Vector3d> &sfm_tracked_points);
+			  vector<SFMFeature> &sfm_f, map<int, Vector3d> &sfm_tracked_points,
+			  Matrix3d ric[], Vector3d tic[]
+		      );
 
 private:
 	bool solveFrameByPnP(Matrix3d &R_initial, Vector3d &P_initial, int i, vector<SFMFeature> &sfm_f);
@@ -69,6 +72,9 @@ private:
 	void triangulateTwoFrames(int frame0, Eigen::Matrix<double, 3, 4> &Pose0, 
 							  int frame1, Eigen::Matrix<double, 3, 4> &Pose1,
 							  vector<SFMFeature> &sfm_f);
-
+	
+	void triangulateLeftAndRight(int frame, Eigen::Matrix<double, 3, 4> &Pose, vector<SFMFeature> &sfm_f,
+				     Matrix3d ric[], Vector3d tic[]);
+	
 	int feature_num;
 };
