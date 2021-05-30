@@ -3,7 +3,7 @@
 ## Update on 30/5/2021
 1. rewrite ```feature_manager.cpp``` and change ```trianglute()``` which use left and right to triangulate.
 2. rewrite ```initial_sfm.cpp```:
-   (1)add ```triangulateLeftAndRight()``` which use left and right to triangulate. /n
+   (1)add ```triangulateLeftAndRight()``` which use left and right to triangulate. 
    (2)use ```triangulateLeftAndRight()``` in ```construct()```.
    (3)rewrite window BA in ```construct()```.
    
