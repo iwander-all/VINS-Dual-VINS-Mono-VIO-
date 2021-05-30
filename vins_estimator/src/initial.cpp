@@ -33,7 +33,8 @@ bool Initial::initialStructure(Estimator *estimator)
 
     if(!sfm.construct(estimator->frame_count + 1, Q, T, l,
               relative_R, relative_T,
-              sfm_f, sfm_tracked_points))
+              sfm_f, sfm_tracked_points,
+	      estimator->ric, estimator->tic))
     {
         ROS_DEBUG("global SFM failed!");
         estimator->marginalization_flag = estimator->MARGIN_OLD;
@@ -86,17 +87,20 @@ bool Initial::checkIMUObservibility(Estimator *estimator)
 
 void Initial::buildSFMFeature(Estimator *estimator, vector<SFMFeature> &sfm_f)
 {
+  //@29/5/2021 add right features in sfm feature
     for (auto &it_per_id : estimator->f_manager.feature)
     {
         int imu_j = it_per_id.start_frame - 1;
         SFMFeature tmp_feature;
         tmp_feature.state = false;
         tmp_feature.id = it_per_id.feature_id;
-        for (auto &it_per_frame : it_per_id.feature_per_frame)
+	for (uint idx=0; idx<it_per_id.feature_per_frame.size();idx++)
         {
             imu_j++;
-            Vector3d pts_j = it_per_frame.point;
+            Vector3d pts_j = it_per_id.feature_per_frame[idx].point;
+	    Vector3d pts_j1 = it_per_id.feature_per_frame1[idx].point;
             tmp_feature.observation.push_back(make_pair(imu_j, Eigen::Vector2d{pts_j.x(), pts_j.y()}));
+	    tmp_feature.observation1.push_back(make_pair(imu_j, Eigen::Vector2d{pts_j1.x(), pts_j1.y()}));
         }
         sfm_f.push_back(tmp_feature);
     }
